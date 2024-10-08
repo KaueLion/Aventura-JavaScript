@@ -1,46 +1,75 @@
-let jogador = {
-    vida: 100,
-    forca: 10,
-    recursos: 50,
-};
-
-const rodadas = 5;
+let vida = 100;
+let forca = 10;
+let recursos = 0;
+let rodadas = 5;
 
 function start() {
-    console.log("O jogo começou!");
-    for (let i = 1; i <= rodadas; i++) {
-        console.log(`Rodada ${i}`);
-        console.log(`Vida: ${jogador.vida}`);
-        console.log(`Força: ${jogador.forca}`);
-        console.log(`Recursos: ${jogador.recursos}`);
-
-        let desafio = Math.floor(Math.random() * 3); // 0: perder vida, 1: ganhar força, 2: perder recursos
-        enfrentarDesafio(desafio);
-
-        if (jogador.vida <= 0) {
-            console.log("Você foi derrotado! Fim de jogo.");
-            return;
-        }
-    }
-    console.log("Você completou todas as rodadas! Vitória!");
+    console.log("Bem-vindo a A Jornada do Aventureiro!");
+    console.log(`Você começa com: VIDA: ${vida}, FORÇA: ${forca}, RECURSO: ${recursos}`);
+    jogarRodada(0);
 }
 
-function enfrentarDesafio(desafio) {
-    switch (desafio) {
-        case 0:
-            let dano = Math.floor(Math.random() * 30);
-            jogador.vida -= dano;
-            console.log(`Você enfrentou um desafio e perdeu ${dano} de vida!`);
-            break;
-        case 1:
-            let ganho = Math.floor(Math.random() * 5);
-            jogador.forca += ganho;
-            console.log(`Você enfrentou um desafio e ganhou ${ganho} de força!`);
-            break;
-        case 2:
-            let perda = Math.floor(Math.random() * 20);
-            jogador.recursos -= perda;
-            console.log(`Você enfrentou um desafio e perdeu ${perda} recursos!`);
-            break;
+function jogarRodada(rodadaAtual) {
+    if (rodadaAtual >= rodadas || vida <= 0) {
+        fimDeJogo();
+        return;
+    }
+
+    console.log(`\nRodada ${rodadaAtual + 1}:`);
+    let desafio = Math.random();
+    if (desafio < 0.5) {
+        combate();
+    } else if (desafio < 0.8) {
+        armadilha();
+    } else {
+        recursosEncontrados();
+    }
+    
+    console.log(`Após a rodada: VIDA: ${vida}, FORÇA: ${forca}, RECURSO: ${recursos}`);
+    jogarRodada(rodadaAtual + 1);
+}
+
+function combate() {
+    console.log("Você encontrou um monstro! Prepare-se para lutar.");
+    let dano = Math.floor(Math.random() * forca);
+    let acao = prompt("Digite 'a' para atacar ou 'd' para defender:");
+
+    if (acao === 'a') {
+        console.log(`Você atacou e causou ${dano} de dano!`);
+    } else if (acao === 'd') {
+        console.log("Você se defendeu e não tomou dano.");
+        return;
+    }
+    
+    let danoRecebido = Math.floor(Math.random() * 20);
+    vida -= danoRecebido;
+    console.log(`Você recebeu ${danoRecebido} de dano. Sua vida agora é: ${vida}`);
+}
+
+function armadilha() {
+    console.log("Você caiu em uma armadilha!");
+    let danoRecebido = Math.floor(Math.random() * 30);
+    vida -= danoRecebido;
+    console.log(`Você recebeu ${danoRecebido} de dano. Sua vida agora é: ${vida}`);
+}
+
+function recursosEncontrados() {
+    console.log("Você encontrou um recurso!");
+    recursos += 1;
+    let acao = prompt("Digite 'v' para aumentar a vida ou 'f' para aumentar a força:");
+    if (acao === 'v') {
+        vida += 20;
+        console.log("Sua vida aumentou em 20.");
+    } else if (acao === 'f') {
+        forca += 5;
+        console.log("Sua força aumentou em 5.");
+    }
+}
+
+function fimDeJogo() {
+    if (vida <= 0) {
+        console.log("Você foi derrotado! Fim de jogo.");
+    } else {
+        console.log("Parabéns! Você completou todas as rodadas e sobreviveu.");
     }
 }
